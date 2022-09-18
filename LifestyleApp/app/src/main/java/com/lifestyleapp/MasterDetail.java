@@ -5,11 +5,11 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
-public class MasterDetail extends AppCompatActivity implements NavigationFragment.OnNavSelectedListener, ProfilePageFragment.OnLifePressListener, WeightManFragment.OnLifePressFromWeightListener {
+public class MasterDetail extends AppCompatActivity implements NavigationFragment.OnNavSelectedListener, ProfilePageFragment.OnLifePressListener, WeightFragment.OnLifePressFromWeightListener {
 
     private NavigationFragment mMasterListNavFrag;
     private ProfilePageFragment profilePageFragment;
-    private WeightManFragment weightManFragment;
+    private WeightFragment weightFragment;
     private WeatherFragment weatherFragment;
 
     @Override
@@ -19,7 +19,7 @@ public class MasterDetail extends AppCompatActivity implements NavigationFragmen
 
         mMasterListNavFrag = new NavigationFragment();
         profilePageFragment = new ProfilePageFragment();
-        weightManFragment = new WeightManFragment();
+        weightFragment = new WeightFragment();
         weatherFragment = new WeatherFragment();
 
 
@@ -55,7 +55,7 @@ public class MasterDetail extends AppCompatActivity implements NavigationFragmen
             if (navIndex == mMasterListNavFrag.PROFILE_BUTTON_INDEX) {
                 fTrans.replace(R.id.master_detail_right_pane_tablet, profilePageFragment, "frag_myprof_tab").commit();
             } else if (navIndex == mMasterListNavFrag.WEIGHT_BUTTON_INDEX) {
-                fTrans.replace(R.id.master_detail_right_pane_tablet, weightManFragment, "frag_weightman_tab").commit();
+                fTrans.replace(R.id.master_detail_right_pane_tablet, weightFragment, "frag_weightman_tab").commit();
             }
             else if(navIndex == mMasterListNavFrag.WEATHER_BUTTON_INDEX){
                 fTrans.replace(R.id.master_detail_right_pane_tablet, weatherFragment, "frag_weather_tab").commit();
@@ -65,7 +65,7 @@ public class MasterDetail extends AppCompatActivity implements NavigationFragmen
             if (navIndex == mMasterListNavFrag.PROFILE_BUTTON_INDEX) {
                 fTrans.replace(R.id.master_detail_pane_phone, profilePageFragment, "frag_myprof_phone").addToBackStack("profile").commit();
             } else if (navIndex == mMasterListNavFrag.WEIGHT_BUTTON_INDEX) {
-                fTrans.replace(R.id.master_detail_pane_phone, weightManFragment, "frag_weightman_phone").addToBackStack("weight").commit();
+                fTrans.replace(R.id.master_detail_pane_phone, weightFragment, "frag_weightman_phone").addToBackStack("weight").commit();
             } else if (navIndex == mMasterListNavFrag.WEATHER_BUTTON_INDEX) {
                 fTrans.replace(R.id.master_detail_pane_phone, weatherFragment, "frag_weather_phone").addToBackStack("weather").commit();
             }
@@ -89,7 +89,7 @@ public class MasterDetail extends AppCompatActivity implements NavigationFragmen
     public void onLifeBtnPressFromWeight() {
         FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
         if (isTablet()) {
-                fTrans.remove(weightManFragment);
+                fTrans.remove(weightFragment);
             }
          else {
             fTrans.replace(R.id.master_detail_pane_phone, mMasterListNavFrag);

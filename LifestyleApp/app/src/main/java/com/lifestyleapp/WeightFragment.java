@@ -26,7 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 
-public class WeightManFragment extends Fragment implements View.OnClickListener {
+public class WeightFragment extends Fragment implements View.OnClickListener {
 
     private ConstraintLayout mainLayout;
     private EditText editTextBMR, editTextCalories, editTextBMI;
@@ -39,13 +39,13 @@ public class WeightManFragment extends Fragment implements View.OnClickListener 
     private View weight_man_frag_view;
     OnLifePressFromWeightListener lifePressListenerFromWeight;
 
-    private WeightManViewModel weightManViewModel;
+    private WeightViewModel weightViewModel;
     private User user;
     private Double bmr = 0.0;
     private Double bmi = 0.0;
     private boolean isSedentary = false;
 
-    public WeightManFragment() {
+    public WeightFragment() {
         // Required empty public constructor
     }
 
@@ -57,7 +57,7 @@ public class WeightManFragment extends Fragment implements View.OnClickListener 
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            lifePressListenerFromWeight = (WeightManFragment.OnLifePressFromWeightListener) context;
+            lifePressListenerFromWeight = (WeightFragment.OnLifePressFromWeightListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnLifePressFromWeightListener");
         }
@@ -79,8 +79,8 @@ public class WeightManFragment extends Fragment implements View.OnClickListener 
         radioButtonActive.setOnClickListener(this);
         radioButtonSedentary.setOnClickListener(this);
 
-        weightManViewModel = ViewModelProviders.of(this).get(WeightManViewModel.class);
-        user = weightManViewModel.getProfileViewModelData().getValue();
+        weightViewModel = ViewModelProviders.of(this).get(WeightViewModel.class);
+        user = weightViewModel.getProfileViewModelData().getValue();
 
         // calculate BMR
         if(user != null)
