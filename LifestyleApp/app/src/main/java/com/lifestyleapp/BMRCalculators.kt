@@ -13,7 +13,7 @@ class BMRCalculators
         }
 
         @JvmStatic
-        fun calculateBMR(pounds: Double, inches: Double, age: Double, gender: Double): Double
+        fun calculateBMR(pounds: Double, inches: Double, age: Double, gender: Int): Double
         {
 
             var kgWeight = pounds / 2.205;
@@ -22,7 +22,7 @@ class BMRCalculators
             // gender neutral bmr
             var bmr = (10 * kgWeight) + (6.25 * cmHeight) - (5 * age);
 
-            if (gender == 1.0) bmr += 5; // for men
+            if (gender == 1) bmr += 5; // for men
             else bmr -= 161;  // for women
 
             return bmr;
