@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+import android.content.res.Configuration;
+import android.widget.Toast;
 
 public class MasterDetail extends AppCompatActivity implements NavigationFragment.OnNavSelectedListener, ProfilePageFragment.OnLifePressListener, WeightFragment.OnLifePressFromWeightListener {
 
@@ -22,6 +24,11 @@ public class MasterDetail extends AppCompatActivity implements NavigationFragmen
         weightFragment = new WeightFragment();
         weatherFragment = new WeatherFragment();
 
+//        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//
+//        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//
+//        }
 
         FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
         if (isTablet()) {
@@ -31,8 +38,12 @@ public class MasterDetail extends AppCompatActivity implements NavigationFragmen
             fTrans.replace(R.id.master_detail_pane_phone, mMasterListNavFrag, "frag_masterlist");
         }
         fTrans.commit();
-
     }
+
+//    @Override
+//    public void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//    }
 
     @Override
     public void onResume() {
@@ -96,4 +107,17 @@ public class MasterDetail extends AppCompatActivity implements NavigationFragmen
         }
         fTrans.commit();
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+//        // Checks the orientation of the screen
+//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+//            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+//        }
+    }
+
     }
