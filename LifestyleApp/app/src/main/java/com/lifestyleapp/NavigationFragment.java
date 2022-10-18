@@ -1,8 +1,10 @@
 package com.lifestyleapp;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
@@ -11,6 +13,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -65,9 +69,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        Log.d("StepCounter", "Sensor Change Detected!");
         if (running) {
-            Log.d("StepCounter", "User is running!");
             totalSteps = sensorEvent.values[0];
             int currentSteps = (int) (totalSteps - previousTotalSteps);
             stepCounterTextView.setText(String.valueOf(currentSteps));
@@ -161,6 +163,11 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
         loadData();
 //        resetSteps();
         sensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
+        if(ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){
+            //ask for permission
+            requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 20);
+        }
 
     }
 
