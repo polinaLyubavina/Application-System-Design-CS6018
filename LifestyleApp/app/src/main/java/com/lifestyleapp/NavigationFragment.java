@@ -1,23 +1,37 @@
 package com.lifestyleapp;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class NavigationFragment extends Fragment implements View.OnClickListener {
+public class NavigationFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener, SensorEventListener {
 
     View navFragmentView;
 
@@ -27,6 +41,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
     Button hikesButton;
     Button weatherButton;
     ImageView profilePhotoView;
+    TextView stepCounterTextView;
     public final int PROFILE_BUTTON_INDEX = 1;
     public final int WEIGHT_BUTTON_INDEX = 2;
     public final int WEATHER_BUTTON_INDEX = 3;
@@ -34,6 +49,13 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
     private NavigationViewModel navigationViewModel;
 
     private UserViewModel userViewModel;
+
+    private SensorManager sensorManager;
+
+    private boolean running = false;
+    private float totalSteps = 0f;
+    private float previousTotalSteps = 0f;
+
 
     @Override
     public void onAttach(Context context) {
@@ -43,6 +65,85 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnNavSelectedListener");
         }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if (running) {
+            totalSteps = sensorEvent.values[0];
+            int currentSteps = (int) (totalSteps - previousTotalSteps);
+            stepCounterTextView.setText(String.valueOf(currentSteps));
+
+
+        }
+    }
+
+//    private void resetSteps() {
+//
+//        stepCounterTextView.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
+//                previousTotalSteps = totalSteps;
+//                stepCounterTextView.setText(0);
+//                saveData();
+//                return true;
+//            }
+//        });
+//    }
+
+    private void saveData() {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putFloat("key1", previousTotalSteps);
+        editor.apply();
+    }
+
+    private void loadData() {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
+        Float savedNumber = sharedPreferences.getFloat("key1", 0f);
+        Log.d("NavigationFragment", String.valueOf(savedNumber));
+        previousTotalSteps = savedNumber;
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        running = true;
+        Sensor stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
+        if(stepSensor == null) {
+            Toast.makeText(getContext(), "No sensor detected on this device", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            Toast.makeText(getContext(), "Sensor detected on this device", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        Log.d("EventListener", "Long press detected");
+        switch (view.getId()) {
+            case R.id.steps_text_view: {
+                Log.d("EventListener", "Long press detected");
+                previousTotalSteps = totalSteps;
+                stepCounterTextView.setText(String.valueOf(0));
+                saveData();
+                Toast.makeText(getContext(), "Steps have been reset successfully.", Toast.LENGTH_SHORT).show();
+            }
+        }
+        return true;
     }
 
     public interface OnNavSelectedListener {
@@ -59,6 +160,14 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 
         // GET USER FROM VIEWMODEL (IF THERE IS ONE), THEN SET THE TEXT FIELDS ON THE UI
         navigationViewModel = ViewModelProviders.of(this).get(NavigationViewModel.class);
+        loadData();
+//        resetSteps();
+        sensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
+        if(ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){
+            //ask for permission
+            requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 20);
+        }
 
     }
 
@@ -72,11 +181,14 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
         hikesButton = navFragmentView.findViewById(R.id.hike_btn_frag);
         weatherButton = navFragmentView.findViewById(R.id.weather_btn_frag);
         profilePhotoView = navFragmentView.findViewById(R.id.photo_nav_pane_frag);
+        stepCounterTextView = (TextView) navFragmentView.findViewById(R.id.steps_text_view);
 
         profileButton.setOnClickListener(this);
         weightManButton.setOnClickListener(this);
         hikesButton.setOnClickListener(this);
         weatherButton.setOnClickListener(this);
+        stepCounterTextView.setOnClickListener(this);
+        stepCounterTextView.setOnLongClickListener(this);
 
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
         User user = userViewModel.getProfileViewModelData().getValue();
@@ -115,6 +227,8 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 
     }
 
+
+
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -142,7 +256,13 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
                 listener.onNavSelected(WEATHER_BUTTON_INDEX);
             }
             break;
+            case R.id.steps_text_view: {
+                Toast.makeText(getContext(), "Long tap to reset steps", Toast.LENGTH_SHORT).show();
+            }
 
         }
     }
+
+
+
 }
