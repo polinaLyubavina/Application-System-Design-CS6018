@@ -121,7 +121,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
         }
         else {
             sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
-            Toast.makeText(getContext(), "Sensor detected on this device", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "Sensor detected on this device", Toast.LENGTH_SHORT).show();
         }
     }
 
