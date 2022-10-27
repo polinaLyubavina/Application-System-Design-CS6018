@@ -1,0 +1,75 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-lifestyleapp-dev-164313-authRole",
+      "UnauthRoleArn": "arn:aws:iam::002181863884:role/amplify-lifestyleapp-dev-164313-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::002181863884:role/amplify-lifestyleapp-dev-164313-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-lifestyleapp-dev-164313-deployment",
+      "UnauthRoleName": "amplify-lifestyleapp-dev-164313-unauthRole",
+      "StackName": "amplify-lifestyleapp-dev-164313",
+      "StackId": "arn:aws:cloudformation:us-east-1:002181863884:stack/amplify-lifestyleapp-dev-164313/69e50070-54b6-11ed-ac90-0e22ccdff659",
+      "AmplifyAppId": "d2qucdwu45c6zq"
+    }
+  },
+  "auth": {
+    "lifestyleapp325a1372": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false,
+      "frontendAuthConfig": {
+        "socialProviders": [],
+        "usernameAttributes": [],
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-lifestyleapp-dev-164313-deployment/amplify-cfn-templates/auth/lifestyleapp325a1372-cloudformation-template.json",
+        "logicalId": "authlifestyleapp325a1372"
+      },
+      "lastPushTimeStamp": "2022-10-25T23:49:21.722Z",
+      "output": {
+        "UserPoolId": "us-east-1_fJtVIoIXZ",
+        "AppClientIDWeb": "6puccherembnqbv23ne4lb05i3",
+        "AppClientID": "38tnc2c6l506odpgbid1avs34v",
+        "IdentityPoolId": "us-east-1:0fbf0365-1d6b-4eb3-8258-0884b23c146a",
+        "UserPoolArn": "arn:aws:cognito-idp:us-east-1:002181863884:userpool/us-east-1_fJtVIoIXZ",
+        "IdentityPoolName": "lifestyleapp325a1372_identitypool_325a1372__dev",
+        "UserPoolName": "lifestyleapp325a1372_userpool_325a1372",
+        "HostedUIDomain": "lifestyleapp9078480a-9078480a-dev",
+        "OAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"LifeStyleApp://callback/\"],\"LogoutURLs\":[\"LifeStyleApp://signout/\"]}"
+      },
+      "lastPushDirHash": "BZNTIXCRff2xli8yX4EgbMjrWPM="
+    }
+  },
+  "storage": {
+    "thirdTimesTheCharm": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "lastPushTimeStamp": "2022-10-25T23:49:21.277Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-lifestyleapp-dev-164313-deployment/amplify-cfn-templates/storage/cloudformation-template.json",
+        "logicalId": "storagethirdTimesTheCharm"
+      },
+      "output": {
+        "BucketName": "thirdtimesthecharmbucket164313-dev",
+        "Region": "us-east-1"
+      },
+      "lastPushDirHash": "+GrzApH27TQvzpVciMO/N3YSUs4="
+    }
+  }
+}
