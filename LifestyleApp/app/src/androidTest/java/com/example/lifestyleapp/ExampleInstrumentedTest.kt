@@ -113,12 +113,7 @@ class CorrectOrderTest {
         //Enter Hikes
         onView(withId(R.id.hike_btn_frag))
             .check(matches(isDisplayed()))
-//            .perform(click())
-//            .check(matches(not(isDisplayed())))
-
-        //Go back
-//        Espresso.pressBack()
-//            .perform(ViewActivity.pressBack())
+            .perform(click())
     }
 
     @Test
