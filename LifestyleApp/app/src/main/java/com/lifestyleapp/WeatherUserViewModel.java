@@ -1,13 +1,13 @@
 package com.lifestyleapp;
 
 import android.app.Application;
+
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 public class WeatherUserViewModel extends AndroidViewModel {
 
-    private MutableLiveData<User> userMutableLiveData;
+    private LiveData<User> userLiveData;
     private UserRepository userRepository;
 
     public WeatherUserViewModel (Application application) {
@@ -16,7 +16,7 @@ public class WeatherUserViewModel extends AndroidViewModel {
 
         userRepository = UserRepository.getInstance();
 
-        userMutableLiveData = userRepository.getUserData();
+        userLiveData = userRepository.getUserData();
 
     }
 

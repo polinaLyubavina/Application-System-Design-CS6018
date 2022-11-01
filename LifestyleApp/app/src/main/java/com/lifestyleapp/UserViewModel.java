@@ -5,11 +5,10 @@ import android.app.Application;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 public class UserViewModel extends AndroidViewModel {
 
-    private MutableLiveData<User> userMutableLiveData;
+    private LiveData<User> userLiveData;
     private UserRepository profilePageRepository;
 
     public UserViewModel(Application application) {
@@ -18,7 +17,7 @@ public class UserViewModel extends AndroidViewModel {
 
         profilePageRepository = UserRepository.getInstance();
 
-        userMutableLiveData = profilePageRepository.getUserData();
+        userLiveData = profilePageRepository.getUserData();
 
     }
 
@@ -29,7 +28,7 @@ public class UserViewModel extends AndroidViewModel {
 
     // RETRIEVE DATA FROM THE REPOSITORY
     public LiveData<User> getProfileViewModelData() {
-        return profilePageRepository.getUserData();
+        return userLiveData;
     }
 
 }

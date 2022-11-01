@@ -1,12 +1,11 @@
 package com.lifestyleapp;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
-import android.content.res.Configuration;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;

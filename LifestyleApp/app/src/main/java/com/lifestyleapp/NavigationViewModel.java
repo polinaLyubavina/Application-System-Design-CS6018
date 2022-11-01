@@ -2,20 +2,19 @@ package com.lifestyleapp;
 
 import android.app.Application;
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 public class NavigationViewModel extends AndroidViewModel {
 
-    private MutableLiveData<User> userMutableLiveData;
+    private LiveData<User> userMutableLiveData;
     private UserRepository profilePageRepository;
 
     public NavigationViewModel(Application application) {
 
         super(application);
         profilePageRepository = UserRepository.getInstance();
+        profilePageRepository.createDb(application.getApplicationContext());
         userMutableLiveData = profilePageRepository.getUserData();
 
     }
