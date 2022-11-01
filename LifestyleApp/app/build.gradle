@@ -1,17 +1,18 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 //def apikeyPropertiesFile = rootProject.file("app/src/main/java/com/lifestyleapp/apikey.properties")
 //def apikeyProperties = new Properties()
 //apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "com.lifestyleapp"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
@@ -51,6 +52,9 @@ dependencies {
     androidTestImplementation 'androidx.test:rules:1.3.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.3.0'
+    implementation 'androidx.test.espresso:espresso-idling-resource:3.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.3.0'
 
     // Room components
     implementation "androidx.room:room-runtime:$rootProject.roomVersion"
@@ -68,6 +72,9 @@ dependencies {
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
     testImplementation 'junit:junit:4.12'
 
+    // Amplify
+    implementation 'com.amplifyframework:aws-storage-s3:1.37.5'
+    implementation 'com.amplifyframework:aws-auth-cognito:1.37.5'
 }
 repositories {
     mavenCentral()

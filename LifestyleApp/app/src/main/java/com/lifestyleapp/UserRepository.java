@@ -1,7 +1,10 @@
 package com.lifestyleapp;
 
+import android.content.Context;
+
 import androidx.annotation.Nullable;
-import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.LiveData;
+import androidx.room.Room;
 
 public class UserRepository {
 
@@ -13,13 +16,26 @@ public class UserRepository {
     // get the only repository in existence
     public static UserRepository getInstance() { return instance; }
 
-    private final MutableLiveData<User> currentUserLiveData = new MutableLiveData<>();
+    UserRoomDatabase db;
 
-    public MutableLiveData<User> getUserData() { return currentUserLiveData; }
+    public void createDb(Context context) {
+        this.db = Room
+                .databaseBuilder(
+                        context,
+                        UserRoomDatabase.class,
+                        "user_database"
+                )
+                .allowMainThreadQueries()
+                .build();
+    }
+
+//    public LiveData<User> getUserData(String fullName) { return db.userDao().getUser(fullName); }
+    public LiveData<User> getUserData() {
+        return db.userDao().getUser();
+    }
 
     public void setUserData (String fullName, int age, String city, String country, double height, double weight, int gender, @Nullable String profilePhotoFileName, @Nullable int profilePhotoSize, @Nullable Integer steps, double bmi, double bmr, boolean sedentary) {
         User userData = new User(fullName, age, city, country, height, weight, gender, profilePhotoFileName, profilePhotoSize, steps);
-        currentUserLiveData.setValue(userData);
+        db.userDao().insert(userData);
     }
-
 }

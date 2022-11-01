@@ -12,6 +12,8 @@
         <entry key="app/src/main/res/drawable/toolbuttonorange.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/toolbuttonred.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/toolbuttonyellow.xml" value="0.1" />
+        <entry key="app/src/main/res/layout-land/fragment_nav_pane.xml" value="0.23446893787575152" />
+        <entry key="app/src/main/res/layout-land/fragment_profile_page.xml" value="0.33238636363636365" />
         <entry key="app/src/main/res/layout-sw600dp/activity_master_detail.xml" value="0.101953125" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_master_detail.xml" value="0.1" />
