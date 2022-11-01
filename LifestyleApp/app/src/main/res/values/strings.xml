@@ -142,6 +142,8 @@
     <string name="pounds_to_change_per_wk">Pounds To Change Per Week:</string>
     <string name="active">Active</string>
     <string name="sedentary">Sedentary</string>
+    <string name="total_steps">Total Steps</string>
+    <string name="step_count">0</string>
 
 
 </resources>

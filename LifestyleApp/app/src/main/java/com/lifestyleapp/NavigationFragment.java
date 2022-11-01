@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.gesture.Gesture;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
@@ -30,8 +31,16 @@ import android.widget.Toast;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
-public class NavigationFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener, SensorEventListener {
+import android.gesture.GestureOverlayView;
+import android.gesture.GestureLibraries;
+import android.gesture.GestureLibrary;
+import android.gesture.GestureOverlayView.OnGesturePerformedListener;
+import android.gesture.Prediction;
+import android.gesture.Gesture;
+
+public class NavigationFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener, SensorEventListener, OnGesturePerformedListener {
 
     View navFragmentView;
 
@@ -52,9 +61,15 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 
     private SensorManager sensorManager;
 
+    private GestureOverlayView objGestureOverlayView;
+
     private boolean running = false;
+    private boolean startGesturePerformed = false;
+    private boolean isStepSensorAvailable = false;
     private float totalSteps = 0f;
     private float previousTotalSteps = 0f;
+
+    private GestureLibrary objGestureLib;
 
 
     @Override
@@ -69,7 +84,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        if (running) {
+        if (running && startGesturePerformed) {
             totalSteps = sensorEvent.values[0];
             int currentSteps = (int) (totalSteps - previousTotalSteps);
             stepCounterTextView.setText(String.valueOf(currentSteps));
@@ -78,18 +93,6 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
         }
     }
 
-//    private void resetSteps() {
-//
-//        stepCounterTextView.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View view) {
-//                previousTotalSteps = totalSteps;
-//                stepCounterTextView.setText(0);
-//                saveData();
-//                return true;
-//            }
-//        });
-//    }
 
     private void saveData() {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
@@ -118,8 +121,12 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 
         if(stepSensor == null) {
             Toast.makeText(getContext(), "No sensor detected on this device", Toast.LENGTH_SHORT).show();
+            isStepSensorAvailable = false;
         }
         else {
+            isStepSensorAvailable = true;
+            Toast.makeText(getContext(), "Make a circle clockwise to start step counter, counter clockwise to stop.", Toast.LENGTH_LONG).show();
+
             sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
 //            Toast.makeText(getContext(), "Sensor detected on this device", Toast.LENGTH_SHORT).show();
         }
@@ -146,6 +153,34 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
         return true;
     }
 
+    @Override
+    public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
+        ArrayList<Prediction> objPrediction = objGestureLib.recognize(gesture);
+
+        if(!isStepSensorAvailable) {
+            Toast.makeText(getContext(), "Gestures will only work if the sensor is available on the device.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(objPrediction.size() > 0 && objPrediction.get(0).score > 1) {
+            String gestureName = objPrediction.get(0).name;
+            if(gestureName == "StartStep") {
+                startGesturePerformed = true;
+                Toast.makeText(getContext(), "Step counter started.", Toast.LENGTH_SHORT).show();
+
+            }
+            if(gestureName == "StopStep") {
+                startGesturePerformed = false;
+                Toast.makeText(getContext(), "Step counter stopped.", Toast.LENGTH_SHORT).show();
+
+            }
+
+        }
+
+
+
+    }
+
     public interface OnNavSelectedListener {
         public void onNavSelected(int navIndex);
     }
@@ -158,7 +193,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // GET USER FROM VIEWMODEL (IF THERE IS ONE), THEN SET THE TEXT FIELDS ON THE UI
+        // GET USER FROM VIEW MODEL (IF THERE IS ONE), THEN SET THE TEXT FIELDS ON THE UI
         navigationViewModel = ViewModelProviders.of(this).get(NavigationViewModel.class);
         loadData();
 //        resetSteps();
@@ -168,6 +203,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
             //ask for permission
             requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 20);
         }
+
 
     }
 
@@ -182,6 +218,12 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
         weatherButton = navFragmentView.findViewById(R.id.weather_btn_frag);
         profilePhotoView = navFragmentView.findViewById(R.id.photo_nav_pane_frag);
         stepCounterTextView = (TextView) navFragmentView.findViewById(R.id.steps_text_view);
+        objGestureLib = GestureLibraries.fromRawResource(getContext(), R.raw.gestures);
+        if(!objGestureLib.load()) {
+            Toast.makeText(getContext(), "Gestures failed to load, gestures will not work.", Toast.LENGTH_SHORT).show();
+        }
+        objGestureOverlayView = (GestureOverlayView) navFragmentView.findViewById(R.id.WidgetGesture);
+        objGestureOverlayView.addOnGesturePerformedListener(this);
 
         profileButton.setOnClickListener(this);
         weightManButton.setOnClickListener(this);
