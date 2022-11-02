@@ -58,6 +58,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
     private NavigationViewModel navigationViewModel;
 
     private UserViewModel userViewModel;
+    private User user;
 
     private SensorManager sensorManager;
 
@@ -71,6 +72,8 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 
     private GestureLibrary objGestureLib;
 
+
+    private UserRepository userRepository;
 
     @Override
     public void onAttach(Context context) {
@@ -95,17 +98,27 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 
 
     private void saveData() {
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putFloat("key1", previousTotalSteps);
-        editor.apply();
+//        SharedPreferences sharedPreferences = getContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putFloat("key1", previousTotalSteps);
+//        editor.apply();
+        userRepository.db.userDao().update((int) previousTotalSteps, user.getFullName());
+
+
     }
 
     private void loadData() {
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
-        Float savedNumber = sharedPreferences.getFloat("key1", 0f);
-        Log.d("NavigationFragment", String.valueOf(savedNumber));
-        previousTotalSteps = savedNumber;
+//        SharedPreferences sharedPreferences = getContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
+//        Float savedNumber = sharedPreferences.getFloat("key1", 0f);
+//        Log.d("NavigationFragment", String.valueOf(savedNumber));
+        if(user.getSteps() != null) {
+            previousTotalSteps = user.getSteps();
+        }
+        else {
+            previousTotalSteps = 0f;
+        }
+        stepCounterTextView.setText(String.valueOf(previousTotalSteps));
+
     }
 
     @Override
@@ -128,7 +141,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
             Toast.makeText(getContext(), "Make a circle clockwise to start step counter, counter clockwise to stop.", Toast.LENGTH_LONG).show();
 
             sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
-//            Toast.makeText(getContext(), "Sensor detected on this device", Toast.LENGTH_SHORT).show();
+            loadData();
         }
     }
 
@@ -136,6 +149,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
     public void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
+        saveData();
     }
 
     @Override
@@ -144,9 +158,10 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
         switch (view.getId()) {
             case R.id.steps_text_view: {
                 Log.d("EventListener", "Long press detected");
-                previousTotalSteps = totalSteps;
-                stepCounterTextView.setText(String.valueOf(0));
+                totalSteps = 0f;
+                previousTotalSteps = 0f;
                 saveData();
+                stepCounterTextView.setText(String.valueOf(user.getSteps()));
                 Toast.makeText(getContext(), "Steps have been reset successfully.", Toast.LENGTH_SHORT).show();
             }
         }
@@ -196,7 +211,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
         // GET USER FROM VIEW MODEL (IF THERE IS ONE), THEN SET THE TEXT FIELDS ON THE UI
         navigationViewModel = ViewModelProviders.of(this).get(NavigationViewModel.class);
         loadData();
-//        resetSteps();
+
         sensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         if(ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){
@@ -233,7 +248,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
         stepCounterTextView.setOnLongClickListener(this);
 
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        User user = userViewModel.getProfileViewModelData().getValue();
+        user = userViewModel.getProfileViewModelData().getValue();
 
         if (user != null) {
 
