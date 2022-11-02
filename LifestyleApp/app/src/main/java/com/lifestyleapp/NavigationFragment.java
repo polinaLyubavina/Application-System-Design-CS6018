@@ -12,6 +12,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -74,6 +75,9 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 
 
     private UserRepository userRepository;
+
+    MediaPlayer startSound;
+    MediaPlayer stopSound;
 
     @Override
     public void onAttach(Context context) {
@@ -174,21 +178,23 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
     public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
         ArrayList<Prediction> objPrediction = objGestureLib.recognize(gesture);
 
-        if(!isStepSensorAvailable) {
-            Toast.makeText(getContext(), "Gestures will only work if the sensor is available on the device.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+//        if(!isStepSensorAvailable) {
+//            Toast.makeText(getContext(), "Gestures will only work if the sensor is available on the device.", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
 
         if(objPrediction.size() > 0 && objPrediction.get(0).score > 1) {
             String gestureName = objPrediction.get(0).name;
             if(gestureName == "StartStep") {
                 startGesturePerformed = true;
                 Toast.makeText(getContext(), "Step counter started.", Toast.LENGTH_SHORT).show();
+                startSound.start();
 
             }
             if(gestureName == "StopStep") {
                 startGesturePerformed = false;
                 Toast.makeText(getContext(), "Step counter stopped.", Toast.LENGTH_SHORT).show();
+                stopSound.start();
 
             }
 
@@ -222,6 +228,9 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
             //ask for permission
             requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 20);
         }
+
+        startSound = MediaPlayer.create(getContext(), R.raw.drums);
+        stopSound = MediaPlayer.create(getContext(), R.raw.ding);
 
 
     }
