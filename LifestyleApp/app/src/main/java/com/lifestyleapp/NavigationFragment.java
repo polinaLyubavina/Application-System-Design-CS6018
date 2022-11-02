@@ -102,7 +102,9 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 //        SharedPreferences.Editor editor = sharedPreferences.edit();
 //        editor.putFloat("key1", previousTotalSteps);
 //        editor.apply();
-        userRepository.db.userDao().update((int) previousTotalSteps, user.getFullName());
+        if(user != null) {
+            userRepository.db.userDao().update((int) previousTotalSteps, user.getFullName());
+        }
 
 
     }
@@ -111,7 +113,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 //        SharedPreferences sharedPreferences = getContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
 //        Float savedNumber = sharedPreferences.getFloat("key1", 0f);
 //        Log.d("NavigationFragment", String.valueOf(savedNumber));
-        if(user.getSteps() != null) {
+        if(user != null && user.getSteps() != null) {
             previousTotalSteps = user.getSteps();
         }
         else {
@@ -210,7 +212,9 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 
         // GET USER FROM VIEW MODEL (IF THERE IS ONE), THEN SET THE TEXT FIELDS ON THE UI
         navigationViewModel = ViewModelProviders.of(this).get(NavigationViewModel.class);
-        loadData();
+        if (user != null) {
+            loadData();
+        }
 
         sensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         if(ContextCompat.checkSelfPermission(getContext(),
