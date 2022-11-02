@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.os.Debug;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,8 +95,15 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
         if (running && startGesturePerformed) {
             totalSteps = sensorEvent.values[0];
             int currentSteps = (int) (totalSteps - previousTotalSteps);
+            Log.d("Step Counter", "Current Steps: " + String.valueOf(currentSteps));
+            Log.d("Step Counter", "Total Steps: " + String.valueOf(totalSteps));
+            Log.d("Step Counter", "Previous Total Steps: " + String.valueOf(previousTotalSteps));
             stepCounterTextView.setText(String.valueOf(currentSteps));
-
+            try {
+                user.setSteps(currentSteps);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         }
     }
@@ -106,8 +114,10 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 //        SharedPreferences.Editor editor = sharedPreferences.edit();
 //        editor.putFloat("key1", previousTotalSteps);
 //        editor.apply();
-        if(user != null) {
-            userRepository.db.userDao().update((int) previousTotalSteps, user.getFullName());
+        try {
+            user.setSteps((int) totalSteps);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
@@ -118,12 +128,13 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 //        Float savedNumber = sharedPreferences.getFloat("key1", 0f);
 //        Log.d("NavigationFragment", String.valueOf(savedNumber));
         if(user != null && user.getSteps() != null) {
-            previousTotalSteps = user.getSteps();
+            totalSteps = user.getSteps();
         }
         else {
-            previousTotalSteps = 0f;
+            totalSteps = 0f;
         }
-        stepCounterTextView.setText(String.valueOf(previousTotalSteps));
+
+        stepCounterTextView.setText(String.valueOf((int) totalSteps));
 
     }
 
@@ -183,15 +194,20 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
             return;
         }
 
+
+
         if(objPrediction.size() > 0 && objPrediction.get(0).score > 1) {
             String gestureName = objPrediction.get(0).name;
-            if(gestureName == "StartStep") {
+            Log.d("Gestures", "Gesture detected: " + gestureName);
+
+            if(gestureName.equals("StartStep")) {
+                Log.d("Gestures", "Starting step counter.");
                 startGesturePerformed = true;
                 Toast.makeText(getContext(), "Step counter started.", Toast.LENGTH_SHORT).show();
                 startSound.start();
-
             }
-            if(gestureName == "StopStep") {
+
+            if(gestureName.equals("StopStep")) {
                 startGesturePerformed = false;
                 Toast.makeText(getContext(), "Step counter stopped.", Toast.LENGTH_SHORT).show();
                 stopSound.start();

@@ -26,7 +26,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -51,7 +50,7 @@ public class ProfilePageFragment extends Fragment implements View.OnClickListene
     ImageView profilePhotoView;
     Bitmap profilePicture = null;
     @Nullable String profilePhotoFileName = null;
-    View myprofFragmentView;
+    View myProfFragmentView;
     OnLifePressListener lifePressListener;
 
     public interface OnLifePressListener {
@@ -74,14 +73,14 @@ public class ProfilePageFragment extends Fragment implements View.OnClickListene
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        myprofFragmentView =  inflater.inflate(R.layout.fragment_profile_page, container, false);
+        myProfFragmentView =  inflater.inflate(R.layout.fragment_profile_page, container, false);
 
-        buttonCamera = myprofFragmentView.findViewById(R.id.prof_update_photo_frag);
-        buttonLifestyle = myprofFragmentView.findViewById(R.id.lifeBtnMyProfFrag);
-        buttonSaveProfile = myprofFragmentView.findViewById(R.id.saveProfileFrag);
-        profilePhotoView= myprofFragmentView.findViewById(R.id.myprof_photo_frag);
-        profileMale = myprofFragmentView.findViewById(R.id.profileMaleFrag);
-        profileFemale = myprofFragmentView.findViewById(R.id.profileFemaleFrag);
+        buttonCamera = myProfFragmentView.findViewById(R.id.prof_update_photo_frag);
+        buttonLifestyle = myProfFragmentView.findViewById(R.id.lifeBtnMyProfFrag);
+        buttonSaveProfile = myProfFragmentView.findViewById(R.id.saveProfileFrag);
+        profilePhotoView= myProfFragmentView.findViewById(R.id.myprof_photo_frag);
+        profileMale = myProfFragmentView.findViewById(R.id.profileMaleFrag);
+        profileFemale = myProfFragmentView.findViewById(R.id.profileFemaleFrag);
 
         // set click listeners
         buttonCamera.setOnClickListener(this);
@@ -91,22 +90,22 @@ public class ProfilePageFragment extends Fragment implements View.OnClickListene
         profileFemale.setOnClickListener(this);
 
         //height seek bar
-        seekBarHeight = myprofFragmentView.findViewById(R.id.seekBarHeightFrag);
+        seekBarHeight = myProfFragmentView.findViewById(R.id.seekBarHeightFrag);
         seekBarHeight.setOnSeekBarChangeListener(seekBarChangeListenerHeight);
 
         int inches = seekBarHeight.getProgress();
-        tvHeight = myprofFragmentView.findViewById(R.id.textViewHeightFrag);
+        tvHeight = myProfFragmentView.findViewById(R.id.textViewHeightFrag);
         tvHeight.setText("Height: " + inches + " inches");
 
         //weight seek bar
-        seekBarWeight = myprofFragmentView.findViewById(R.id.seekBarWeightFrag);
+        seekBarWeight = myProfFragmentView.findViewById(R.id.seekBarWeightFrag);
         seekBarWeight.setOnSeekBarChangeListener(seekBarChangeListenerWeight);
 
         int pounds = seekBarWeight.getProgress();
-        tvWeight = myprofFragmentView.findViewById(R.id.textViewWeightFrag);
+        tvWeight = myProfFragmentView.findViewById(R.id.textViewWeightFrag);
         tvWeight.setText("Weight " + pounds + " pounds");
 
-        return myprofFragmentView;
+        return myProfFragmentView;
 
     }
 
@@ -115,16 +114,16 @@ public class ProfilePageFragment extends Fragment implements View.OnClickListene
     {
         super.onStart();
 
-        profileName = myprofFragmentView.findViewById(R.id.profileNameFrag);
-        profileAge = myprofFragmentView.findViewById(R.id.profileAgeFrag);
-        profileCity = myprofFragmentView.findViewById(R.id.profileCityFrag);
-        profileCountry = myprofFragmentView.findViewById(R.id.profileCountryFrag);
-        tvHeight = myprofFragmentView.findViewById(R.id.textViewHeightFrag);
-        seekBarHeight = myprofFragmentView.findViewById(R.id.seekBarHeightFrag);
-        tvWeight = myprofFragmentView.findViewById(R.id.textViewWeightFrag);
-        seekBarWeight = myprofFragmentView.findViewById(R.id.seekBarWeightFrag);
-        profileMale = myprofFragmentView.findViewById(R.id.profileMaleFrag);
-        profileFemale = myprofFragmentView.findViewById(R.id.profileFemaleFrag);
+        profileName = myProfFragmentView.findViewById(R.id.profileNameFrag);
+        profileAge = myProfFragmentView.findViewById(R.id.profileAgeFrag);
+        profileCity = myProfFragmentView.findViewById(R.id.profileCityFrag);
+        profileCountry = myProfFragmentView.findViewById(R.id.profileCountryFrag);
+        tvHeight = myProfFragmentView.findViewById(R.id.textViewHeightFrag);
+        seekBarHeight = myProfFragmentView.findViewById(R.id.seekBarHeightFrag);
+        tvWeight = myProfFragmentView.findViewById(R.id.textViewWeightFrag);
+        seekBarWeight = myProfFragmentView.findViewById(R.id.seekBarWeightFrag);
+        profileMale = myProfFragmentView.findViewById(R.id.profileMaleFrag);
+        profileFemale = myProfFragmentView.findViewById(R.id.profileFemaleFrag);
 
         // GET USER FROM VIEWMODEL (IF THERE IS ONE), THEN SET THE TEXT FIELDS ON THE UI
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);

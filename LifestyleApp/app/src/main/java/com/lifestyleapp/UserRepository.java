@@ -38,4 +38,8 @@ public class UserRepository {
         User userData = new User(fullName, age, city, country, height, weight, gender, profilePhotoFileName, profilePhotoSize, steps);
         db.userDao().insert(userData);
     }
+
+    public void update(int steps, String fullName) {
+        db.userDao().update(steps, fullName);
+    }
 }
