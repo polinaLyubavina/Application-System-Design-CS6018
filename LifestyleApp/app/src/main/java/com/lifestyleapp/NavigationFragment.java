@@ -178,10 +178,10 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
     public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
         ArrayList<Prediction> objPrediction = objGestureLib.recognize(gesture);
 
-//        if(!isStepSensorAvailable) {
-//            Toast.makeText(getContext(), "Gestures will only work if the sensor is available on the device.", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
+        if(!isStepSensorAvailable) {
+            Toast.makeText(getContext(), "Gestures will only work if the sensor is available on the device.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if(objPrediction.size() > 0 && objPrediction.get(0).score > 1) {
             String gestureName = objPrediction.get(0).name;
