@@ -25,4 +25,10 @@ public interface UserDao {
         @Query("SELECT * FROM user_table LIMIT 1")  // returns only one row from the table, if there is a match
         LiveData<User> getUser();
 
+        @Query("UPDATE user_table SET steps=:steps where fullName=:fullName")
+        void update(int steps, String fullName);
+
+        @Query("SELECT steps FROM user_table WHERE fullName=:fullName")
+        int getSteps(String fullName);
+
 }
