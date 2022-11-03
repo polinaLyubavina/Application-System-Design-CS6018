@@ -127,6 +127,7 @@ public class ProfilePageFragment extends Fragment implements View.OnClickListene
         profileFemale = myprofFragmentView.findViewById(R.id.profileFemaleFrag);
 
         // GET USER FROM VIEWMODEL (IF THERE IS ONE), THEN SET THE TEXT FIELDS ON THE UI
+
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
         User user = userViewModel.getProfileViewModelData().getValue();
         @Nullable String fileToPlaceAsProfile = null;
@@ -207,7 +208,7 @@ public class ProfilePageFragment extends Fragment implements View.OnClickListene
                 } else {
 
                     intAge = Integer.parseInt(stringAge);
-                    userViewModel.setProfileViewModelData(stringName, intAge, stringCity, stringCountry, doubleHeight, doubleWeight, intGender, profilePhotoFileName, byteArrSize, null,0.0, 0.0, false);
+                    userViewModel.setProfileViewModelData(stringName, intAge, stringCity, stringCountry, doubleHeight, doubleWeight, intGender, profilePhotoFileName, byteArrSize, null,0.0, 0.0, false,0);
                     Toast.makeText(getActivity(), "User information saved!", Toast.LENGTH_SHORT).show();
 
                 }

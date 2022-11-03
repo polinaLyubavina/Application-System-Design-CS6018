@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
@@ -32,7 +33,7 @@ public class WeatherFragment extends Fragment implements View.OnClickListener
     private WeatherViewModel mWeatherViewModel;
     private WeatherUserViewModel weatherUserViewModel;
 
-    private User user;
+    //private User user;
 
     ProfilePageFragment.OnLifePressListener lifePressListener;
 
@@ -91,7 +92,7 @@ public class WeatherFragment extends Fragment implements View.OnClickListener
         mWeatherViewModel = ViewModelProviders.of(this).get(WeatherViewModel.class);
 
         //Set the observer
-        mWeatherViewModel.getData().observe(this, weatherObserver);
+        mWeatherViewModel.getData().observe(getViewLifecycleOwner(), weatherObserver);
 
         return view;
     }
@@ -131,18 +132,25 @@ public class WeatherFragment extends Fragment implements View.OnClickListener
     {
         super.onStart();
 
-        weatherUserViewModel = ViewModelProviders.of(this).get(WeatherUserViewModel.class);
-        user = weatherUserViewModel.getProfileViewModelData().getValue();
 
-        if(user != null && !user.getCity().isEmpty() && !user.getCountry().isEmpty())
-        {
-            editLocation.setText(user.getCity() + ", " + user.getCountry());
-            localLocation = editLocation.getText().toString();
-            String locationForURL = localLocation.replaceAll(",\\s+", ",").trim();
-            locationForURL = locationForURL.replaceAll("\\s+", "%20").trim();
+        weatherUserViewModel = ViewModelProviders.of(this.getActivity()).get(WeatherUserViewModel.class);
 
-            loadWeatherData(locationForURL);
-        }
+        weatherUserViewModel.getProfileViewModelData().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                if(user != null && !user.getCity().isEmpty() && !user.getCountry().isEmpty())
+                {
+                    editLocation.setText(user.getCity() + ", " + user.getCountry());
+                    localLocation = editLocation.getText().toString();
+                    String locationForURL = localLocation.replaceAll(",\\s+", ",").trim();
+                    locationForURL = locationForURL.replaceAll("\\s+", "%20").trim();
+
+                    loadWeatherData(locationForURL);
+                }
+            }
+        });
+
+
     }
 
     @Override
