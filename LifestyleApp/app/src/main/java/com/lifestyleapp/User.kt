@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "user_table")
-class User constructor(fullName: String, age: Int, city: String, country: String, height: Double, weight: Double, gender: Int, profilePhotoPath: String?, profilePhotoSize: Int?, steps: Int?)
+class User constructor(fullName: String, age: Int, city: String, country: String, height: Double, weight: Double, gender: Int, profilePhotoPath: String?, profilePhotoSize: Int?, steps: Int?, sedentary:Boolean,pounds:Double)
 {
 
     @PrimaryKey
@@ -20,6 +20,8 @@ class User constructor(fullName: String, age: Int, city: String, country: String
     var profilePhotoPath: String?;
     var profilePhotoSize: Int?;
     var steps: Int?;
+    var sedentary: Boolean;
+    var pounds:Double;
 
     init {
         this.fullName = fullName;
@@ -31,7 +33,9 @@ class User constructor(fullName: String, age: Int, city: String, country: String
         this.gender = gender;
         this.profilePhotoPath = profilePhotoPath;
         this.profilePhotoSize = profilePhotoSize;
+        this.sedentary= sedentary;
         this.steps = steps;
+        this.pounds = pounds;
     }
 
 }

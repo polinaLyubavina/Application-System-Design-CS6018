@@ -18,6 +18,8 @@ import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Debug;
@@ -276,31 +278,37 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
         stepCounterTextView.setOnClickListener(this);
         stepCounterTextView.setOnLongClickListener(this);
 
-        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        user = userViewModel.getProfileViewModelData().getValue();
+        userViewModel = new ViewModelProvider(this.getActivity()).get(UserViewModel.class);
 
-        if (user != null) {
+        userViewModel.getProfileViewModelData().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
 
-            if (user.getProfilePhotoPath() != null) {
-                String profPhotoFileName = user.getProfilePhotoPath();
+                if (user != null) {
 
-                FileInputStream fis = null;
-                try {
-                    fis = getContext().openFileInput(profPhotoFileName);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                    if (user.getProfilePhotoPath() != null) {
+                        String profPhotoFileName = user.getProfilePhotoPath();
+
+                        FileInputStream fis = null;
+                        try {
+                            fis = getContext().openFileInput(profPhotoFileName);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        byte[] readBytes = new byte[user.getProfilePhotoSize()];
+                        try {
+                            fis.read(readBytes);
+                            fis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Bitmap fromFileBmp = BitmapFactory.decodeByteArray(readBytes, 0, readBytes.length);
+                        profilePhotoView.setImageBitmap(fromFileBmp);
+                    }
                 }
-                byte[] readBytes = new byte[user.getProfilePhotoSize()];
-                try {
-                    fis.read(readBytes);
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Bitmap fromFileBmp = BitmapFactory.decodeByteArray(readBytes, 0, readBytes.length);
-                profilePhotoView.setImageBitmap(fromFileBmp);
             }
-        }
+        });
+
         return navFragmentView;
     }
 
@@ -317,6 +325,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
+
         switch (view.getId()){
             case R.id.my_prof_btn_frag: {
 
@@ -329,7 +338,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
             break;
             case R.id.hike_btn_frag: {
                 // Search for nearby hikes on Google Maps
-                String city = navigationViewModel.getCity();
+                String city = userViewModel.getCity();//navigationViewModel.getCity();
                 Uri gmmIntentUri = Uri.parse("geo:0,0?q=hiking" + " " + Uri.encode(city));
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");

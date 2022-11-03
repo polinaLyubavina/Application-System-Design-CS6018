@@ -32,10 +32,11 @@ public class UserRepository {
 //    public LiveData<User> getUserData(String fullName) { return db.userDao().getUser(fullName); }
     public LiveData<User> getUserData() {
         return db.userDao().getUser();
+        //return db.userDao().getUserById("Imane");
     }
 
-    public void setUserData (String fullName, int age, String city, String country, double height, double weight, int gender, @Nullable String profilePhotoFileName, @Nullable int profilePhotoSize, @Nullable Integer steps, double bmi, double bmr, boolean sedentary) {
-        User userData = new User(fullName, age, city, country, height, weight, gender, profilePhotoFileName, profilePhotoSize, steps);
+    public void setUserData (String fullName, int age, String city, String country, double height, double weight, int gender, @Nullable String profilePhotoFileName, @Nullable int profilePhotoSize, @Nullable Integer steps, boolean sedentary, Double pounds) {
+        User userData = new User(fullName, age, city, country, height, weight, gender, profilePhotoFileName, profilePhotoSize, steps,sedentary,pounds);
         db.userDao().insert(userData);
     }
 
