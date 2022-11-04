@@ -169,6 +169,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
         super.onPause();
         sensorManager.unregisterListener(this);
         saveData();
+        //TODO: Add upload db
     }
 
     @Override
