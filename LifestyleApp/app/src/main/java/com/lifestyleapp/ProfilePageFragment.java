@@ -156,6 +156,14 @@ public class ProfilePageFragment extends Fragment implements View.OnClickListene
                             profileFemale.setChecked(true);
                             profileMale.setChecked(false);
                         }
+                        if (user.getWeight() > 0) {
+                            tvWeight.setText("Weight: " + Double.toString(user.getWeight()) + " pounds");
+                            seekBarWeight.setProgress((int) user.getWeight());
+                        }
+                        if (user.getHeight() > 0) {
+                            tvHeight.setText("Height: " + Double.toString(user.getHeight()) + " inches");
+                            seekBarHeight.setProgress((int) user.getHeight());
+                        }
 
                     }
                     if(fileToPlaceAsProfile!=null) {
