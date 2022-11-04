@@ -4,12 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +14,10 @@ import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -89,6 +86,10 @@ public class WeightFragment extends Fragment implements View.OnClickListener {
         userViewModel.getProfileViewModelData().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
             public void onChanged(User user) {
+
+                if (user == null) {
+                    return;
+                }
 
                 Double bmr = BMRCalculators.calculateBMR(user.getWeight(), user.getHeight(), user.getAge(), user.getGender());
                 Double bmi = BMRCalculators.calculateBMI(user.getWeight(), user.getHeight());
