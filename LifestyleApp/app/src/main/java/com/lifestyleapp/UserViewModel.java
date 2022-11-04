@@ -1,10 +1,16 @@
 package com.lifestyleapp;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+
+import com.amplifyframework.core.Amplify;
+
+
+import java.io.File;
 
 public class UserViewModel extends AndroidViewModel {
 
@@ -24,6 +30,7 @@ public class UserViewModel extends AndroidViewModel {
     // FORWARD ALL OF THE DATA TO THE REPOSITORY
     public void setProfileViewModelData(String fullName, int age, String city, String country, double height, double weight, int gender, @Nullable String profilePhotoFileName, @Nullable int profilePhotoSize, @Nullable Integer steps, double bmi, double bmr, boolean sedentary, double pounds){
         profilePageRepository.setUserData(fullName, age, city, country, height, weight, gender, profilePhotoFileName, profilePhotoSize, steps, sedentary,pounds);
+        uploadDatabase();
     }
 
     // RETRIEVE DATA FROM THE REPOSITORY
@@ -60,6 +67,17 @@ public class UserViewModel extends AndroidViewModel {
     }
 
 
+    //AWS Database
+    private void uploadDatabase() {
+        String databasePath = getApplication().getApplicationContext().getDatabasePath("user_database").getPath();
+        File databaseFile = new File(databasePath);
 
+        Amplify.Storage.uploadFile(
+                "user_database",
+                databaseFile,
+                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+                storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+        );
+    }
 
 }

@@ -5,6 +5,8 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.RawQuery;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 //    What is the DAO?
 //    A DAO (data access object) validates your SQL at compile-time and associates it with a method.
@@ -31,6 +33,9 @@ public interface UserDao {
 
     @Query("select * from user_table where fullName= :id")
     LiveData<User>  getUserById(String id);
+
+    @RawQuery
+    int checkpoint(SupportSQLiteQuery supportSQLiteQuery);
 
         @Query("UPDATE user_table SET steps=:steps where fullName=:fullName")
         void update(int steps, String fullName);
