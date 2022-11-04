@@ -59,6 +59,12 @@ public class MasterDetail extends AppCompatActivity implements NavigationFragmen
         // TODO: Add upload db
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // TODO: Add upload db
+    }
+
     private void restOfOnCreate(Bundle savedInstanceState) {
         Log.i("MyAmplifyApp", "Successfully downloaded: user.db");
         setContentView(R.layout.activity_master_detail);
