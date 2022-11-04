@@ -51,22 +51,22 @@ class CorrectOrderTest {
 
         onView(withHint("Name:"))
             .perform(scrollTo())
-            .perform(typeText("TestName"))
+            .perform(replaceText("TestName"))
             .check(matches(withText("TestName")))
 
         onView(withHint("Age:"))
             .perform(scrollTo())
-            .perform(typeText("20"))
+            .perform(replaceText("20"))
             .check(matches(withText("20")))
 
         onView(withHint("City:"))
             .perform(scrollTo())
-            .perform(typeText("Salt Lake City"))
+            .perform(replaceText("Salt Lake City"))
             .check(matches(withText("Salt Lake City")))
 
         onView(withHint("Country:"))
             .perform(scrollTo())
-            .perform(typeText("USA"))
+            .perform(replaceText("USA"))
             .check(matches(withText("USA")))
 
         onView(withId(R.id.profileMaleFrag))

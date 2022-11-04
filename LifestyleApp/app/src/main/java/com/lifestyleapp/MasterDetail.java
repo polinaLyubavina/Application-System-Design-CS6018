@@ -35,8 +35,22 @@ public class MasterDetail extends AppCompatActivity implements NavigationFragmen
         }
 
         super.onCreate(savedInstanceState);
-        this.downloadDatabase(savedInstanceState);
 
+        // Check if we're running espresso tests
+        boolean istest;
+        try {
+            Class.forName ("androidx.test.espresso.Espresso");
+            istest = true;
+        } catch (ClassNotFoundException e) {
+            istest = false;
+        }
+
+        // if espresso tests, just continue, else restore the database
+        if (istest) {
+            restOfOnCreate(savedInstanceState);
+        } else {
+            this.downloadDatabase(savedInstanceState);
+        }
     }
 
     private void restOfOnCreate(Bundle savedInstanceState) {
