@@ -56,13 +56,13 @@ public class MasterDetail extends AppCompatActivity implements NavigationFragmen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // TODO: Add upload db
+        uploadDatabase();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        // TODO: Add upload db
+        uploadDatabase();
     }
 
     private void restOfOnCreate(Bundle savedInstanceState) {
@@ -182,4 +182,16 @@ public class MasterDetail extends AppCompatActivity implements NavigationFragmen
         );
     }
 
+    //AWS Database
+    private void uploadDatabase() {
+        String databasePath = getApplication().getApplicationContext().getDatabasePath("user_database").getPath();
+        File databaseFile = new File(databasePath);
+
+        Amplify.Storage.uploadFile(
+                "user_database",
+                databaseFile,
+                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+                storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+        );
     }
+}

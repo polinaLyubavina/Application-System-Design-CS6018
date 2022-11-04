@@ -3,9 +3,13 @@ package com.lifestyleapp;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.gesture.Gesture;
+import android.gesture.GestureLibraries;
+import android.gesture.GestureLibrary;
+import android.gesture.GestureOverlayView;
+import android.gesture.GestureOverlayView.OnGesturePerformedListener;
+import android.gesture.Prediction;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
@@ -15,14 +19,6 @@ import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-
-import android.os.Debug;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,17 +28,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
+
+import com.amplifyframework.core.Amplify;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import android.gesture.GestureOverlayView;
-import android.gesture.GestureLibraries;
-import android.gesture.GestureLibrary;
-import android.gesture.GestureOverlayView.OnGesturePerformedListener;
-import android.gesture.Prediction;
-import android.gesture.Gesture;
 
 public class NavigationFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener, SensorEventListener, OnGesturePerformedListener {
 
@@ -169,7 +167,7 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
         super.onPause();
         sensorManager.unregisterListener(this);
         saveData();
-        //TODO: Add upload db
+        uploadDatabase();
     }
 
     @Override
@@ -359,6 +357,17 @@ public class NavigationFragment extends Fragment implements View.OnClickListener
         }
     }
 
+    //AWS Database
+    private void uploadDatabase() {
+        String databasePath = getContext().getApplicationContext().getDatabasePath("user_database").getPath();
+        File databaseFile = new File(databasePath);
 
+        Amplify.Storage.uploadFile(
+                "user_database",
+                databaseFile,
+                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+                storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+        );
+    }
 
 }
