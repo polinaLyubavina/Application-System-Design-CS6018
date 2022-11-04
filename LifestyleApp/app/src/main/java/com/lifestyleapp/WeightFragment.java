@@ -86,54 +86,64 @@ public class WeightFragment extends Fragment implements View.OnClickListener {
        // weightViewModel = ViewModelProviders.of(this).get(WeightViewModel.class);
         userViewModel = new ViewModelProvider(this.getActivity()).get(UserViewModel.class);
 
-        userViewModel.getProfileViewModelData().observe(getViewLifecycleOwner(), new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
+        try {
+            userViewModel.getProfileViewModelData().observe(getViewLifecycleOwner(), new Observer<User>() {
+                @Override
+                public void onChanged(User user) {
 
-                Double bmr = BMRCalculators.calculateBMR(user.getWeight(), user.getHeight(), user.getAge(), user.getGender());
-                Double bmi = BMRCalculators.calculateBMI(user.getWeight(), user.getHeight());
-
-                //pounds per week seek bar
-                seekBarPoundsPerWeek = weight_man_frag_view.findViewById(R.id.calculatorPoundsPerWeekFrag);
-                seekBarPoundsPerWeek.setOnSeekBarChangeListener(seekBarChangePoundsPerWeek);
-
-                //text above pounds per week seek bar
-                poundsToLose = seekBarPoundsPerWeek.getProgress()/10.0;
-                tvPoundsPerWeek = weight_man_frag_view.findViewById(R.id.tvCalculatorChangeTextFrag);
-                tvPoundsPerWeek.setText("Pounds To Change Per Week: " + poundsToLose);
-
-                if (user != null && user.getProfilePhotoPath() != null)
-                {
-
-                    FileInputStream fis = null;
+                    Double bmr = null;
+                    Double bmi = null;
                     try {
-                        fis = getContext().openFileInput(user.getProfilePhotoPath());
-                    } catch (FileNotFoundException e) {
+                        bmr = BMRCalculators.calculateBMR(user.getWeight(), user.getHeight(), user.getAge(), user.getGender());
+                        bmi = BMRCalculators.calculateBMI(user.getWeight(), user.getHeight());
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
-                    byte[] readBytes = new byte[user.getProfilePhotoSize()];
-                    try {
-                        fis.read(readBytes);
-                        fis.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    //pounds per week seek bar
+                    seekBarPoundsPerWeek = weight_man_frag_view.findViewById(R.id.calculatorPoundsPerWeekFrag);
+                    seekBarPoundsPerWeek.setOnSeekBarChangeListener(seekBarChangePoundsPerWeek);
+
+                    //text above pounds per week seek bar
+                    poundsToLose = seekBarPoundsPerWeek.getProgress()/10.0;
+                    tvPoundsPerWeek = weight_man_frag_view.findViewById(R.id.tvCalculatorChangeTextFrag);
+                    tvPoundsPerWeek.setText("Pounds To Change Per Week: " + poundsToLose);
+
+                    if (user != null && user.getProfilePhotoPath() != null)
+                    {
+
+                        FileInputStream fis = null;
+                        try {
+                            fis = getContext().openFileInput(user.getProfilePhotoPath());
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
+                        byte[] readBytes = new byte[user.getProfilePhotoSize()];
+                        try {
+                            fis.read(readBytes);
+                            fis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Bitmap fromFileBmp = BitmapFactory.decodeByteArray(readBytes,0,readBytes.length);
+                        profilePhoto.setImageBitmap(fromFileBmp);
                     }
-                    Bitmap fromFileBmp = BitmapFactory.decodeByteArray(readBytes,0,readBytes.length);
-                    profilePhoto.setImageBitmap(fromFileBmp);
+
+                    if(user != null && user.getHeight() != 0 && user.getWeight() != 0)
+                    {
+                        tvHeaderInformation.setText("Calculations based on a weight of " + user.getWeight() + " pounds and a height of " + user.getHeight() + " inches.");
+                        editTextCalories.setText(String.valueOf((int) BMRCalculators.calculateCaloriesToEat(bmr, poundsToLose, user.getSedentary())));
+                        editTextBMR.setText(String.valueOf(bmr.intValue()));
+                        editTextBMI.setText(String.valueOf(new DecimalFormat("#.0").format(bmi)));
+                    }
+
+
                 }
-
-                if(user != null && user.getHeight() != 0 && user.getWeight() != 0)
-                {
-                    tvHeaderInformation.setText("Calculations based on a weight of " + user.getWeight() + " pounds and a height of " + user.getHeight() + " inches.");
-                    editTextCalories.setText(String.valueOf((int) BMRCalculators.calculateCaloriesToEat(bmr, poundsToLose, user.getSedentary())));
-                    editTextBMR.setText(String.valueOf(bmr.intValue()));
-                    editTextBMI.setText(String.valueOf(new DecimalFormat("#.0").format(bmi)));
-                }
-
-
-            }
-        });
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // calculate BMR
 
