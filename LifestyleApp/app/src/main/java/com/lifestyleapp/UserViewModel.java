@@ -28,7 +28,7 @@ public class UserViewModel extends AndroidViewModel {
 
     // RETRIEVE DATA FROM THE REPOSITORY
     public LiveData<User> getProfileViewModelData() {
-        return userLiveData;
+        return UserRepository.getInstance().getUserData();
     }
 
     public void setSedentary(Boolean sedentary){

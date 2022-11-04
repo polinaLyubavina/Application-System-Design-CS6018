@@ -96,7 +96,8 @@
                     android:ems="10"
                     android:inputType="textPersonName"
                     android:hint="@string/name_colon"
-                    android:importantForAutofill="no" />
+                    android:autofillHints="personName"
+                    android:importantForAutofill="yes" />
 
             <EditText
                     android:id="@+id/profileAgeFrag"

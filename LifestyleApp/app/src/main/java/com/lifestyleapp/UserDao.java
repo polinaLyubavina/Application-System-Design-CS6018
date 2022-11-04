@@ -32,4 +32,10 @@ public interface UserDao {
     @Query("select * from user_table where fullName= :id")
     LiveData<User>  getUserById(String id);
 
+        @Query("UPDATE user_table SET steps=:steps where fullName=:fullName")
+        void update(int steps, String fullName);
+
+        @Query("SELECT steps FROM user_table WHERE fullName=:fullName")
+        int getSteps(String fullName);
+
 }
