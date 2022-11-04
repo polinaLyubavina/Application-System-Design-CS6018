@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.room.Room;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 public class UserRepository {
 
@@ -38,5 +39,6 @@ public class UserRepository {
     public void setUserData (String fullName, int age, String city, String country, double height, double weight, int gender, @Nullable String profilePhotoFileName, @Nullable int profilePhotoSize, @Nullable Integer steps, boolean sedentary, Double pounds) {
         User userData = new User(fullName, age, city, country, height, weight, gender, profilePhotoFileName, profilePhotoSize, steps,sedentary,pounds);
         db.userDao().insert(userData);
+        db.userDao().checkpoint(new SimpleSQLiteQuery("pragma wal_checkpoint(full)"));
     }
 }

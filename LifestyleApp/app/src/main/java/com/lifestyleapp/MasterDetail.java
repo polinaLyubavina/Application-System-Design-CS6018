@@ -12,9 +12,7 @@ import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 
 public class MasterDetail extends AppCompatActivity implements NavigationFragment.OnNavSelectedListener, ProfilePageFragment.OnLifePressListener, WeightFragment.OnLifePressFromWeightListener {
 
@@ -36,9 +34,13 @@ public class MasterDetail extends AppCompatActivity implements NavigationFragmen
             Log.e("MyAmplifyApp", "Could not initialize Amplify", error);
         }
 
-        this.uploadFile();
-
         super.onCreate(savedInstanceState);
+        this.downloadDatabase(savedInstanceState);
+
+    }
+
+    private void restOfOnCreate(Bundle savedInstanceState) {
+        Log.i("MyAmplifyApp", "Successfully downloaded: user.db");
         setContentView(R.layout.activity_master_detail);
 
         mMasterListNavFrag = new NavigationFragment();
@@ -142,22 +144,15 @@ public class MasterDetail extends AppCompatActivity implements NavigationFragmen
 //        }
     }
 
-    private void uploadFile() {
-        File exampleFile = new File(getApplicationContext().getFilesDir(), "ExampleKey");
+    private void downloadDatabase(Bundle savedInstanceState) {
+        String databasePath = getApplicationContext().getDatabasePath("user_database").getPath();
+        File databaseFile = new File(databasePath);
 
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(exampleFile));
-            writer.append("Example file contents");
-            writer.close();
-        } catch (Exception exception) {
-            Log.e("MyAmplifyApp", "Upload failed", exception);
-        }
-
-        Amplify.Storage.uploadFile(
-                "ExampleKey",
-                exampleFile,
-                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
-                storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+        Amplify.Storage.downloadFile(
+                "user_database",
+                databaseFile,
+                result -> restOfOnCreate(savedInstanceState),
+                storageFailure -> Log.e("MyAmplifyApp", "Download failed", storageFailure)
         );
     }
 

@@ -1,5 +1,8 @@
 package com.lifestyleapp;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,21 +20,20 @@ import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.fragment.app.Fragment;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
 
 public class ProfilePageFragment extends Fragment implements View.OnClickListener {
 
@@ -129,46 +131,53 @@ public class ProfilePageFragment extends Fragment implements View.OnClickListene
         // GET USER FROM VIEWMODEL (IF THERE IS ONE), THEN SET THE TEXT FIELDS ON THE UI
 
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        User user = userViewModel.getProfileViewModelData().getValue();
-        @Nullable String fileToPlaceAsProfile = null;
-        if(photoTaken) {
-            fileToPlaceAsProfile = profilePhotoFileName;
-        }
-        if (user != null) {
+        userViewModel.getProfileViewModelData().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                if(user != null && !user.getCity().isEmpty() && !user.getCountry().isEmpty())
+                {
+                    @Nullable String fileToPlaceAsProfile = null;
+                    if(photoTaken) {
+                        fileToPlaceAsProfile = profilePhotoFileName;
+                    }
+                    if (user != null) {
 
-            if(user.getProfilePhotoPath()!=null && !photoTaken) {
-                fileToPlaceAsProfile = user.getProfilePhotoPath();
-            }
-            if (!user.getFullName().equals("")) profileName.setText(user.getFullName());
-            if (user.getAge() != 0) profileAge.setText(String.valueOf(user.getAge()));
-            if (!user.getCity().equals("")) profileCity.setText(user.getCity());
-            if (!user.getCountry().equals("")) profileCountry.setText(user.getCountry());
-            if (user.getGender() == 1) {
-                profileMale.setChecked(true);
-                profileFemale.setChecked(false);
-            } else if (user.getGender() == 0){
-                profileFemale.setChecked(true);
-                profileMale.setChecked(false);
-            }
+                        if(user.getProfilePhotoPath()!=null && !photoTaken) {
+                            fileToPlaceAsProfile = user.getProfilePhotoPath();
+                        }
+                        if (!user.getFullName().equals("")) profileName.setText(user.getFullName());
+                        if (user.getAge() != 0) profileAge.setText(String.valueOf(user.getAge()));
+                        if (!user.getCity().equals("")) profileCity.setText(user.getCity());
+                        if (!user.getCountry().equals("")) profileCountry.setText(user.getCountry());
+                        if (user.getGender() == 1) {
+                            profileMale.setChecked(true);
+                            profileFemale.setChecked(false);
+                        } else if (user.getGender() == 0){
+                            profileFemale.setChecked(true);
+                            profileMale.setChecked(false);
+                        }
 
-        }
-        if(fileToPlaceAsProfile!=null) {
-            FileInputStream fis = null;
-            try {
-                fis = getContext().openFileInput(fileToPlaceAsProfile);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                    }
+                    if(fileToPlaceAsProfile!=null) {
+                        FileInputStream fis = null;
+                        try {
+                            fis = getContext().openFileInput(fileToPlaceAsProfile);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        byte[] readBytes = new byte[byteArrSize];
+                        try {
+                            fis.read(readBytes);
+                            fis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Bitmap fromFileBmp = BitmapFactory.decodeByteArray(readBytes, 0, readBytes.length);
+                        profilePhotoView.setImageBitmap(fromFileBmp);
+                    }
+                }
             }
-            byte[] readBytes = new byte[byteArrSize];
-            try {
-                fis.read(readBytes);
-                fis.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Bitmap fromFileBmp = BitmapFactory.decodeByteArray(readBytes, 0, readBytes.length);
-            profilePhotoView.setImageBitmap(fromFileBmp);
-        }
+        });
     }
 
     @Override
